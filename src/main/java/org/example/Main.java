@@ -4,14 +4,16 @@ package org.example;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        // Create a first Block , the genesisBlock since
+        //Since its the first block we enter 0 for the value of the previous hash
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        Block genesisBlock = new Block("Hello , I am the first Block ", "0");
+        System.out.println("Hah For Block 1: " + genesisBlock.hash);
+
+        Block secondBlock = new Block ("Yo, am the second Block  ", genesisBlock.hash);
+        System.out.println("Hash for Block 2: " + secondBlock.hash);
+
+        Block thirdBlock = new Block("Hey am the third Block ", secondBlock.hash);
+        System.out.println("Hash for Block 3: " + thirdBlock.hash);
     }
 }

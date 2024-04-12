@@ -22,5 +22,20 @@ public class Block {
         this.data = data;
         this.previousHash = previousHash;
         this.timeStamp = new Date().getTime ();
+        //adding the calculatedHash Method
+        this.hash = calculateHash();
     }
+
+    //Applying the applySha256 helper to calculate the Hash
+    //The hash must be calculated from all the parts of the Block i.e previous hash, data and timestamp
+
+    public String calculateHash () {
+        String calculatedHash = StringUtil.applySha256(
+                previousHash +
+                        Long.toString(timeStamp) +
+                        data
+        );
+        return calculatedHash;
+    }
+
 }
