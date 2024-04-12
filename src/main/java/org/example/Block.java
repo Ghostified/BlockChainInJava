@@ -8,7 +8,7 @@ Each block contains its own digital fingerprint , contain fingerprint of the pre
 Fingerprint = Hash
 Each block has its own hash and in part a hash of the previous block
 If the data of the previous hash is changed , calculated in part by the data , it affects all chains in the block
-Meaning: changing data in this list, will change the signaturee of the entire block
+Meaning: changing data in this list, will change the signature of the entire block
 
  */
 public class Block {
@@ -16,6 +16,7 @@ public class Block {
     public String previousHash; //hold the previous block hash
     private String data; //Our data will be a simple message of the block data
     private long timeStamp; //as a number in milliseconds
+    int nonce;
 
     //Block Constructor
     public Block (String data, String previousHash) {
@@ -27,7 +28,7 @@ public class Block {
     }
 
     //Applying the applySha256 helper to calculate the Hash
-    //The hash must be calculated from all the parts of the Block i.e previous hash, data and timestamp
+    // The Hash must be calculated from all the parts of the Block ie previous hash, data and timestamp
 
     public String calculateHash () {
         String calculatedHash = StringUtil.applySha256(
@@ -36,6 +37,16 @@ public class Block {
                         data
         );
         return calculatedHash;
+    }
+
+    public void mineBlock (int difficulty ) {
+        //Create a string with difficulty zero
+        String target = new String (new char [difficulty]).replace('\0','0');
+        while (!hash.substring(0,difficulty).equals(target)){
+            nonce++;
+            hash = calculateHash();
+        }
+        System.out.println("Block Mined !! " + hash);
     }
 
 }
