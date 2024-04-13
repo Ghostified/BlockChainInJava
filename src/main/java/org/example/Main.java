@@ -11,9 +11,9 @@ public class Main {
     public static ArrayList<Block> blockchain = new ArrayList<Block>();
     public static int difficulty = 0;
     public static void main(String[] args) {
+
         // Create a first Block , the genesisBlock
         //Since it is the first block we enter 0 for the value of the previous hash
-
         blockchain.add(new Block("Hi Iam the first Block", "0"));
         System.out.println("Trying to mine block one....");
         blockchain.get(0).mineBlock(difficulty);
