@@ -22,8 +22,8 @@ public class Wallet {
 
     public void generateKeyPair () {
         try {
-            KeyPairGenerator keyGen = new KeyPairGenerator.getInstance("ESDSA", "BC");
-            SecureRandom random = new SecureRandom.getInstance("SHA1PRNG");
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA", "BC");
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
             ECGenParameterSpec ecSpec = new ECGenParameterSpec("prime192v1");
 
             //Initialize key generator  and generate key pair
