@@ -1,6 +1,7 @@
 package org.example;
 import java.security.*;
 import java.util.*;
+import java.util.ArrayList;
 /*
 In a blockchain , each transaction contains:
 public key of the sender
@@ -20,7 +21,7 @@ public class Transaction {
     public PublicKey sender;
 
     //Receivers public key/ address
-    public PublicKey reciepient;
+    public PublicKey recipient;
 
     //amount
     public float value;
@@ -37,18 +38,33 @@ public class Transaction {
     //Constructor
     public Transaction ( PublicKey from, PublicKey to, float value, ArrayList<TransactionInput> inputs) {
         this.sender = from;
-        this.reciepient = to;
+        this.recipient = to;
         this.value = value;
         this.inputs = inputs;
     }
 
+
+
+    //utilizing the signature by appending the generateSignature and verifySignatureMethods
+    //This method signs all the data not to be tampered with
+    public void generateSignature (PrivateKey privateKey) {
+        String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(recipient) + Float.toString(value);
+        signature = StringUtil.applyECDSASig(privateKey, data);
+    }
+
+    //Verifies that  a transaction has been signed and not tampered
+    public boolean verifySignature  () {
+        String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(recipient)  + Float.toString(value) ;
+        return StringUtil.verifyECDSASig(sender , data, signature);
+    }
+
     //This method calculates the transaction hash that will be used as the  transaction ID
     private String calculateHash () {
-         //increase the sequence to avoid two identical transactions having the same hash
+        //increase the sequence to avoid two identical transactions having the same hash
         sequence ++;
         return  StringUtil.applySha256(
-                StringUtil.getStringFromKey(sender) +
-                        StringUtil.getStringFromKey(reciepient) +
+                StringUtil.getStringFromKey(sender)
+                        + StringUtil.getStringFromKey(recipient) +
                         Float.toString(value)
         );
     }
