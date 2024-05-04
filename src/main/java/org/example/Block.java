@@ -1,5 +1,6 @@
 package org.example;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /*
@@ -14,13 +15,13 @@ Meaning: changing data in this list, will change the signature of the entire blo
 public class Block {
     public String hash;
     public String previousHash; //hold the previous block hash
-    private String data; //Our data will be a simple message of the block data
+    public  String merkleRoot;
+    public ArrayList <Transaction> transactions = new ArrayList<Transaction>(); //our data will be a simple message
     private long timeStamp; //as a number in milliseconds
     int nonce;
 
     //Block Constructor
-    public Block (String data, String previousHash) {
-        this.data = data;
+    public Block (String previousHash) {
         this.previousHash = previousHash;
         this.timeStamp = new Date().getTime ();
         //adding the calculatedHash Method
@@ -34,19 +35,34 @@ public class Block {
         String calculatedHash = StringUtil.applySha256(
                 previousHash +
                         Long.toString(timeStamp) +
-                        data
+                        Integer.toString(nonce) +
+                        merkleRoot
         );
         return calculatedHash;
     }
 
     public void mineBlock (int difficulty ) {
-        //Create a string with difficulty zero
-        String target = new String (new char [difficulty]).replace('\0','0');
-        while (!hash.substring(0,difficulty).equals(target)){
+        merkleRoot = StringUtil.getMerkleRoot(transactions);
+        String target = StringUtil.getDificultyString(difficulty); //create string with difficulty 0
+        while (!hash.substring(0,difficulty).equals(target)) {
             nonce++;
-            hash = calculateHash();
+            hash =calculateHash();
         }
         System.out.println("Block Mined !! " + hash);
     }
 
+    //Add transaction to this block
+    public boolean addTransaction (Transaction transaction){
+        //process transaction chgeck if valid , unless block is genesis block then ignore
+        if (transaction == null) return  false;
+        if ((previousHash != "0")) {
+            if ((transaction.processTransaction() != true)) {
+                System.out.println("Transaction failed to process . Discartded");
+                return  false;
+            }
+        }
+        transactions.add(transaction);
+        System.out.println("Transaction successfully added to block");
+        return true;
+    }
 }

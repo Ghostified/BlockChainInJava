@@ -68,4 +68,60 @@ public class Transaction {
                         Float.toString(value)
         );
     }
+
+    //returns true id if new Transactions could be created
+    public boolean processTransaction() {
+        if (verifySignature() == false ) {
+            System.out.println("Transaction signature failed to verify");
+            return  false;
+        }
+
+        //gather transactions input(making sure they are unspent
+        for (TransactionInput i : inputs) {
+            i.UTXO = NoobChain.UTXOs.get(i.transactionOutputID);
+        }
+
+        //Check if the transaction is valid
+        if (getInputsValue() < NoobChain.minimumTransaction) {
+            System.out.println("Transaction Inputs too small" + getInputsValue ());
+            return  false;
+        }
+
+        //generate transaction outputs
+        float leftOver = getInputsValue () - value; //get the value of inputs then the left over change
+        transactionID = calculateHash();
+        outputs.add(new TransactionOutput(this.recipient, value,transactionID)); //send value to reciepent
+        outputs.add(new TransactionOutput( this .sender, leftOver, transactionID)); // send the leftover change back to sender
+
+        //add outputs to unspent list
+        for (TransactionOutput o : outputs) {
+            NoobChain.UTXOs.put(o.id, o);
+        }
+
+        //remove transaction inputs from UTXO list as spent
+        for (TransactionInput i : inputs) {
+            if (i.UTXO == null) continue; //if transaction cant be found skip
+            NoobChain.UTXOs.remove(i.UTXO.id);
+        }
+        return false;
+    }
+
+    //returns sum of inputs (UTXO's) values
+    public float getInputsValue() {
+        float total = 0;
+        for (TransactionInput i : inputs) {
+            if (i.UTXO == null) continue; //if transaction can not be found skip it
+            total += i.UTXO.value;
+        }
+        return  total;
+    }
+
+    //returns the sum of outputs
+    public float getOutputsValue () {
+        float total = 0;
+        for (TransactionOutput o : outputs){
+            total += o.value;
+        }
+        return  total;
+    }
 }
