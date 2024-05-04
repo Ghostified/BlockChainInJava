@@ -1,21 +1,17 @@
 package org.example;
 
-import com.google.gson.GsonBuilder;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 import java.security.*;
 import java.util.*;
 import java.util.ArrayList;
-import java.util.Base64;
-import com.google.gson.GsonBuilder;
-import org.bouncycastle.*;
 
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
+public class NoobChain {
 
     public static ArrayList<Block> blockchain = new ArrayList<Block>();
+    //list of all transactions
+    public static  HashMap<String, TransactionOutput> UTXOs = new HashMap<String,TransactionOutput>();
     public static int difficulty = 0;
     public static Wallet walletA;
     public static Wallet walletB;
@@ -37,7 +33,7 @@ public class Main {
         transaction.generateSignature(walletA.privateKey);
 
         //verify the signature works and verify it from public key
-        System.out.println("Is signature verified");
+        System.out.println("Is signature verified: ");
         System.out.println(transaction.verifySignature());
     }
 }
